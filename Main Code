@@ -1,0 +1,162 @@
+import datetime
+from Models.Artwork import Artwork
+from Models.Location import Location
+from Models.Visitor import Visitor
+from Models.Ticket import Ticket
+from Models.Exhibition import Exhibition
+from Models.SpecialEvents import SpecialEvent
+from Models.Discount import Discount
+
+#Importing all of the previously made models into the main application code, they will all be made into a program structure
+
+class Main:
+    def __init__(self):
+        self.artworks = []
+        self.exhibitions = []
+        self.special_events = []
+        self.visitors = []
+        self.tickets = []
+
+    def add_artwork(self):
+        title = input("Enter the title of the artwork: ")
+        artist = input("Enter the name of the artist: ")
+        date_of_creation = input("Enter the date of creation: ")
+        historical_significance = input("Enter the historical significance: ")
+        location_type = input("Enter the location type (permanent, exhibition, or special event): ")
+        location = None
+        if location_type == "exhibition":
+            location = self.create_exhibition()
+        elif location_type == "special event":
+            location = self.create_special_event()
+        artwork = Artwork(title, artist, date_of_creation, historical_significance, location)
+        self.artworks.append(artwork)
+
+    def create_exhibition(self):
+        name = input("Enter the name of the exhibition: ")
+        location_type = "exhibition"
+        start_date = datetime.datetime.strptime(input("Enter the start date (YYYY-MM-DD): "), "%Y-%m-%d")#I used %Y-%m-%d format to specify that it is a date string, %Y year %m month %d day and theye done in a "Zero Padding" manner which helps us in comparing or manipulating the numbers for example a normal date would be 2024-5-3 but with zero padding it would be 2024-05-03
+        end_date = datetime.datetime.strptime(input("Enter the end date (YYYY-MM-DD): "), "%Y-%m-%d")
+        artworks = [artwork for artwork in self.artworks if artwork.location_type == "exhibition"]
+        exhibition = Exhibition(name, location_type, start_date, end_date, artworks)
+        self.exhibitions.append(exhibition)
+        return exhibition
+
+    def create_special_event(self):
+        name = input("Enter the name of the special event: ")
+        location_type = "special event"
+        start_date = datetime.datetime.strptime(input("Enter the start date (YYYY-MM-DD): "), "%Y-%m-%d")
+        end_date = datetime.datetime.strptime(input("Enter the end date (YYYY-MM-DD): "), "%Y-%m-%d")
+        price = float(input("Enter the price: "))
+        special_event = SpecialEvent(name, location_type, start_date, end_date, price)
+        self.special_events.append(special_event)
+        return special_event
+
+    def add_visitor(self):
+        name = input("Enter the name of the visitor: ")
+        age = int(input("Enter the age: "))
+        category = input("Enter the category (individual or group): ")
+        visitor = Visitor(name, age, category)
+        self.visitors.append(visitor)
+    def display_artworks(self):
+        print("\nArtworks:")
+        print("{:<30} {:<20} {:<20} {:<30} {:<20}".format("Title", "Artist", "Date of Creation", "Historical Significance", "Location"))#Within this code I used the {:<30} {:<20} {:<20} {:<30} {:<20} as the width of the padding for the "Title, Artist, Date of creation, and Historical significance" column headers. This makes it so that if a word is too short the column will still be wide enough to be proportionate
+        for artwork in self.artworks:
+            print("{:<30} {:<20} {:<20} {:<30} {:<20}".format(artwork.title, artwork.artist, artwork.date_of_creation, artwork.historical_significance, artwork.location.name))
+
+    def display_exhibitions(self):
+        print("\nExhibitions:")
+        print("{:<20} {:<20} {:<20} {:<20}".format("Name", "Start Date", "End Date", "Artworks"))
+        for exhibition in self.exhibitions:
+            print("{:<20} {:<20} {:<20} {:<20}".format(exhibition.name, exhibition.start_date, exhibition.end_date, ', '.join([artwork.title for artwork in exhibition.artworks])))
+
+    def display_visitors(self):
+        print("\nVisitors:")
+        print("{:<20} {:<10} {:<10}".format("Name", "Age", "Category"))
+        for visitor in self.visitors:
+            print("{:<20} {:<10} {:<10}".format(visitor.name, visitor.age, visitor.category))
+
+    def purchase_ticket(self):
+        visitor = self.visitors[-1]
+        location_type = input("Enter the location type (artwork, exhibition, or special event): ")
+        if location_type == "artwork":
+            location = None
+            artwork_title = input("Enter the title of the artwork: ")
+            for artwork in self.artworks:
+                if artwork.title == artwork_title:
+                    location = artwork.location
+            if location is None:
+                print("Artwork not found.")
+                return
+        elif location_type == "exhibition":
+            exhibition_name = input("Enter the name of the exhibition: ")
+            for exhibition in self.exhibitions:
+                if exhibition.name == exhibition_name:
+                    location = exhibition
+                    break#To terminate hte loop, without break the loop will till look for the remainingexhibitions even after finding the match.
+            else:
+                print("Exhibition not found.")
+                return
+        elif location_type == "special event":
+            special_event_name = input("Enter the name of the special event: ")
+            for special_event in self.special_events:
+                if special_event.name == special_event_name:
+                    location = special_event
+                break
+            else:
+                print("Special event not found.")
+                return
+        date_time = datetime.datetime.strptime(input("Enter the date and time (YYYY-MM-DD HH:MM): "), "%Y-%m-%d %H:%M")#Similar to the %y %m %d, the %H:%M gives me a zero padded hour and minute
+        if location_type == "exhibition":
+            price = location.get_price(visitor)
+        elif location_type == "special event":
+            price = location.price
+        else:
+            price = location.get_price(visitor)
+        ticket = Ticket(visitor, location, date_time, price)
+        self.tickets.append(ticket)
+        print(f"Ticket purchased for {location.name} at {date_time} for {price} AED.")
+
+    def display_payment_receipt(self):
+        total = 0
+        print("Payment Receipt:")
+        for ticket in self.tickets:
+            print(f"{ticket.visitor.name}: {ticket.location.name} - {ticket.date_time} - {ticket.price} AED")
+            total += ticket.price #+= is used to add the ticket price to the total, inswead of saying total = total + ticket.price
+        print(f"Total: {total} AED")
+
+if __name__ == "__main__":
+    main = Main()
+    while True:
+        print("\nOptions:")
+        print("1. Add artwork")
+        print("2. Create exhibition")
+        print("3. Create special event")
+        print("4. Add visitor")
+        print("5. Purchase ticket")
+        print("6. Display payment receipt")
+        print("7. Display Details")
+        print("8. Quit")
+        option = int(input("Enter the option number: "))
+        if option == 1:
+            main.add_artwork()
+        elif option == 2:
+            main.create_exhibition()
+        elif option == 3:
+            main.create_special_event()
+        elif option == 4:
+            main.add_visitor()
+        elif option == 5:
+            main.purchase_ticket()
+        elif option == 6:
+            main.display_payment_receipt()
+        elif option == 7:
+            print("\nArtworks:")#\n is used to print and skip to the next line, so it will print artworks, then skip to the next line, then print exhibitions, then skip to the next line and print visitors.
+            main.display_artworks()
+            print("\nExhibitions:")
+            main.display_exhibitions()
+            print("\nVisitors:")
+            main.display_visitors()    
+        elif option == 8:
+            break
+        else:
+            print("Invalid option. Please try again.")
