@@ -1,0 +1,70 @@
+import unittest
+from Models.Discount import Discount
+from Models.Payment import Payment
+from Models.Location import Location
+from Models.SpecialEvent import SpecialEvent
+from Models.Visitor import Visitor
+from Models.Event import Event
+from Models.EventManager import EventManager
+
+class TestDiscount(unittest.TestCase):#Using the unittest toolkit to check the code works as intended
+    def test_discount_creation(self):
+        discount = Discount("Percentage", 20)
+        self.assertEqual(discount.discount_type, "Percentage")#The assertequal is a way of checking if both values are equal as a verification, it is a part of the unittest module in python
+        self.assertEqual(discount.value, 20)
+
+class TestPayment(unittest.TestCase):
+    def test_payment_creation(self):
+        payment = Payment("Ticket123", "Credit Card")
+        self.assertEqual(payment.ticket, "Ticket123")
+        self.assertEqual(payment.payment_method, "Credit Card")
+
+class TestSpecialEvent(unittest.TestCase):
+    def test_special_event_creation(self):
+        special_event = SpecialEvent("Concert", "Outdoor Space", "2024-05-15", "2024-05-16", 50)
+        self.assertEqual(special_event.name, "Concert")
+        self.assertEqual(special_event.location, "Outdoor Space")
+        self.assertEqual(special_event.start_date, "2024-05-15")
+        self.assertEqual(special_event.end_date, "2024-05-16")
+        self.assertEqual(special_event.price, 50)
+
+class TestVisitor(unittest.TestCase):
+    def test_visitor_creation(self):
+        visitor = Visitor("Abdullah Ali", 30, "Individual")
+        self.assertEqual(visitor.name, "Abdullah Ali")
+        self.assertEqual(visitor.age, 30)
+        self.assertEqual(visitor.category, "Individual")
+
+    def test_add_discount(self):
+        visitor = Visitor("Yousuf Sameh", 25, "Individual")
+        discount = Discount("Percentage", 10)
+        visitor.add_discount(discount)
+        self.assertEqual(len(visitor.discounts), 1)
+        self.assertEqual(visitor.discounts[0], discount)
+
+class TestEvent(unittest.TestCase):
+    def test_event_creation(self):
+        event = Event("Musical Concert", "2024-05-15", "Outdoor Space")
+        self.assertEqual(event.name, "Musical Concert")
+        self.assertEqual(event.date, "2024-05-15")
+        self.assertEqual(event.location, "Outdoor Space")
+
+class TestEventManager(unittest.TestCase):
+    def test_add_event(self):
+        event_manager = EventManager()
+        event = Event("Art Exhibition", "2024-06-20", "Main Gallery")
+        event_manager.add_event(event)
+        self.assertEqual(len(event_manager.events), 1)
+        self.assertEqual(event_manager.events[0], event)
+
+    def test_view_events(self):
+        event_manager = EventManager()
+        event_manager.add_event(Event("Musical Concert", "2024-05-15", "Outdoor Space"))
+        event_manager.add_event(Event("Art Exhibition", "2024-06-20", "Main Gallery"))
+        expected_output = "Events:\n1. Event: Musical Concert (2024-05-15) at Outdoor Space\n2. Event: Art Exhibition (2024-06-20) at Main Gallery\n"
+        with unittest.mock.patch('sys.stdout', new_callable=io.StringIO) as mock_stdout: #Here i used the unittest mock patch to redirect the "sys.stdout" which is the normal output that would usually print to the "io.StringIO" So basically this runs a tes tthat checks if the captured output is the same as the expected output. (I asked ChatGPT for the best confirmation method of test runs and it told me to use this method, I did not copy paste it exactly but I tried to include it within the code)
+            event_manager.view_events()
+            self.assertEqual(mock_stdout.getvalue(), expected_output) #This is the part that compares the expected output with the given output
+
+if __name__ == '__main__':
+    unittest.main()#Using unittest only in __main__
