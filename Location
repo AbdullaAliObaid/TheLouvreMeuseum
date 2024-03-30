@@ -1,0 +1,4 @@
+class Location: #Will be importing this class to import a location for the exhibition model
+    def __init__(self, name, location_type):
+        self.name = name
+        self.location_type = location_type
