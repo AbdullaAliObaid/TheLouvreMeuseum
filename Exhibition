@@ -1,0 +1,51 @@
+from Models.Location import Location
+
+class Exhibition(Location):
+    def __init__(self, name, location_type, start_date, end_date, artworks):
+        super().__init__(name, location_type)#I used super() here to call the the location class, and name & location_type are inhereted from the Location class.
+        self.start_date = start_date
+        self.end_date = end_date
+        self.artworks = artworks
+
+    def display_exhibition_details(self):
+        """
+        Shows the exhibition details: the name, location, start and end dates, and artworks.
+        """
+        print(f"Exhibition: {self.name} ({self.location_type}) - {self.start_date} to {self.end_date}")
+        print("Artworks:")
+        for artwork in self.artworks:
+            print(f"  {artwork.title} by {artwork.artist}")
+
+    def add_artwork(self, artwork):
+        """
+        Add an artwork to the exhibition..
+        """
+        self.artworks.append(artwork) #Using the "Append" command that we learned in the first semester
+
+    def remove_artwork(self, artwork):
+        """
+        Remove an artwork from the exhibition.
+        """
+        self.artworks.remove(artwork)
+
+    def __str__(self):
+        return f"Exhibition: {self.name} ({self.location_type}) - {self.start_date} to {self.end_date}"
+
+
+
+
+
+
+
+
+
+
+
+'''from Models.Location import Location
+
+class Exhibition(Location):
+    def __init__(self, name, location_type, start_date, end_date, artworks):
+        super().__init__(name, location_type)
+        self.start_date = start_date
+        self.end_date = end_date
+        self.artworks = artworks'''
