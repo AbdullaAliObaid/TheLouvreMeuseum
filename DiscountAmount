@@ -1,0 +1,4 @@
+class Discount:
+    def __init__(self, discount_type, value):
+        self.discount_type = discount_type
+        self.value = value
