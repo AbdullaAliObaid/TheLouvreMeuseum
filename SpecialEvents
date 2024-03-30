@@ -1,0 +1,8 @@
+from Models.Location import Location
+
+class SpecialEvent(Location):
+    def __init__(self, name, location_type, start_date, end_date, price):
+        super().__init__(name, location_type) #This class also uses the super() function to inherent frmo its parent class, Location
+        self.start_date = start_date
+        self.end_date = end_date
+        self.price = price
