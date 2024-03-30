@@ -1,0 +1,11 @@
+class Event:
+    def __init__(self, name, date, location):
+        self.name = name
+        self.date = date
+        self.location = location
+
+    def __str__(self):
+        return f"{self.name} (on {self.date}) at {self.location}"
+
+event = Event("Musical Concert", "2024-05-15", "Outdoor Space")
+print(event)
