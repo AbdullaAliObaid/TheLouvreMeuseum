@@ -1,0 +1,6 @@
+class Ticket:
+    def __init__(self, visitor, location, date_time, price):
+        self.visitor = visitor
+        self.location = location
+        self.date_time = date_time
+        self.price = price
