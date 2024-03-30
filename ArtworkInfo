@@ -1,0 +1,31 @@
+class Artwork:
+    _artworks_count = 1
+
+    def __init__(self, title, artist, date_of_creation, historical_significance, location):
+        self.title = title
+        self.artist = artist
+        self.date_of_creation = date_of_creation
+        self.historical_significance = historical_significance
+        self.location = location
+        self.id = Artwork._artworks_count
+        Artwork._artworks_count += 1
+
+    def display(self):
+        """Display the artwork information"""
+        print(f"Artwork {self.id}: {self.title} (by {self.artist}) - {self.location}")
+
+    def change_location(self, new_location):
+        """Change the artwork's location"""
+        self.location = new_location
+
+    def is_assigned_to_ticket(self):
+        """Check if the artwork is currently assigned to a ticket"""
+        return self.ticket is not None
+
+    def assign_to_ticket(self, ticket):
+        """Assign the artwork to a ticket"""
+        self.ticket = ticket
+
+    def remove_from_ticket(self):
+        """Remove the artwork from a ticket"""
+        self.ticket = None
