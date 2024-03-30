@@ -1,0 +1,11 @@
+class Payment:
+    def __init__(self, ticket, payment_method):
+        self.ticket = ticket
+        self.payment_method = payment_method
+
+    def __str__(self):
+        return f"Payment: Ticket: {self.ticket}, Payment Method: {self.payment_method}"
+
+
+payment = Payment(ticket, "Credit Card")
+print(payment)
